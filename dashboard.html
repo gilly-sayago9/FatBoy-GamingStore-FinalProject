@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - FatBoy GameStop</title>
+    <link rel="icon" href="images/logo.png" type="image/png">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="video-background">
+        <video id="bg-video" autoplay muted loop playsinline>
+            <source src="scr/main.webm" type="video/webm">
+        </video>
+        <div class="video-overlay"></div>
+    </div>
+
+    <header class="auth-header">
+        <div class="auth-left">
+            <div class="auth-logo">
+                <div class="avatar-circle-sm">
+                    <img src="images/logo.png" alt="Logo">
+                </div>
+            </div>
+            <button onclick="app.toggleVideoSound()" class="music-btn" title="Unmute Video">
+                <i class="fas fa-volume-mute sound-icon"></i>
+            </button>
+        </div>
+        <div class="auth-nav-links">
+            <a href="#">About</a>
+            <a href="#">Contact Us</a>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="login-card">
+            <div class="logo-area">
+                <div class="avatar-circle">
+                    <img src="images/logo.png" alt="Logo">
+                </div>
+            </div>
+            <h2 id="auth-title">Log in to continue</h2>
+            
+            <form id="auth-form" onsubmit="app.handleAuth(event)">
+                <div class="input-group">
+                    <label>Username</label>
+                    <input type="text" id="username" placeholder="Enter your username" required>
+                </div>
+                <div class="input-group">
+                    <label>Password</label>
+                    <input type="password" id="password" placeholder="Enter your password" required>
+                </div>
+                <button type="submit" class="btn-primary">Log in</button>
+            </form>
+            
+            <p class="switch-auth">
+                <a href="#" onclick="app.toggleAuthMode()" id="auth-switch-text">Create an account</a>
+            </p>
+        </div>
+    </div>
+
+    <script src="scrpt/database.js"></script>
+    <script src="scrpt/script.js"></script>
+    <script>
+        // Check if already logged in, redirect if so
+        if(localStorage.getItem('fbg_session')) {
+            const user = JSON.parse(localStorage.getItem('fbg_session'));
+            if(user.role === 'admin') window.location.href = 'admin.html';
+            else window.location.href = 'dashboard.html';
+        }
+    </script>
+</body>
+</html>
