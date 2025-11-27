@@ -18,13 +18,26 @@
 
     <nav id="navbar">
         <div class="logo">
-            <img src="images/logo.png" alt="Logo"> FatBoy GameStop
+            <img src="images/logo.png" alt="Logo"> 
+            <span class="logo-text">FatBoy GameStop</span>
         </div>
         <div class="nav-links">
-            <a href="#" onclick="app.showShop()">Shop</a>
-            <a href="#" onclick="app.showCart()">Cart <span id="cart-count">0</span></a>
-            <a href="#" onclick="app.showDashboard()">My Dashboard</a>
-            <a href="#" onclick="app.logout()">Logout</a>
+            <a href="#" onclick="app.showShop()" title="Shop">
+                <i class="fas fa-store"></i>
+            </a>
+        
+            <a href="#" onclick="app.showCart()" class="cart-btn" title="Cart">
+                <i class="fas fa-shopping-cart"></i>
+                <span id="cart-count" class="cart-badge">0</span>
+            </a>
+        
+            <a href="#" onclick="app.showDashboard()" title="My Dashboard">
+                <i class="fas fa-user-circle"></i>
+            </a>
+        
+            <a href="#" onclick="app.logout()" title="Logout">
+                <i class="fas fa-sign-out-alt"></i>
+            </a>
         </div>
     </nav>
 

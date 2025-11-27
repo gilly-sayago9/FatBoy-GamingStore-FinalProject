@@ -34,11 +34,73 @@ nav {
     align-items: center; border-bottom: 1px solid var(--border-color); 
     z-index: 100; box-sizing: border-box;
 }
-.logo { display: flex; align-items: center; gap: 10px; font-weight: bold; }
+.logo { display: flex; align-items: center; gap: 10px; font-weight: bold; cursor: pointer;}
 .logo img { height: 35px; width: 35px; object-fit: cover; border-radius: 50%; }
 
-.nav-links a { color: var(--text-color); text-decoration: none; margin-left: 20px; font-weight: bold; transition: 0.3s; }
-.nav-links a:hover { color: var(--primary-yellow); }
+/* Align the icons nicely */
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 50px; /* Space between icons */
+}
+
+/* 1. Base Text Style */
+.logo-text {
+    font-weight: 800;
+    /* Create a gradient background: Gold -> White -> Gold */
+    background: linear-gradient(
+        to right, 
+        #f5c518 20%, 
+        #fff 50%, 
+        #f5c518 80%
+    );
+    /* Make the background huge so we can move it */
+    background-size: 200% auto;
+    
+    /* Clip the background to the text shape */
+    color: transparent;
+    -webkit-background-clip: text;
+    background-clip: text;
+    
+    /* Run the animation */
+    animation: shine 3s linear infinite;
+}
+
+/* 2. The Animation Keyframes */
+@keyframes shine {
+    to {
+        background-position: 200% center;
+    }
+}
+
+/* Base Icon Style */
+.nav-links a {
+    color: #a0a0a0; /* Grey default */
+    font-size: 1.4rem; /* Make icons bigger than standard text */
+    text-decoration: none;
+    position: relative; /* Needed for the cart badge positioning */
+    transition: color 0.3s ease, transform 0.2s ease;
+}
+
+/* Hover Effect */
+.nav-links a:hover {
+    color: #f5c518; /* Gold color on hover */
+    /* transform: scale(1.1);  */
+}
+
+/* The Cart Count Badge (The little number) */
+.cart-badge {
+    position: absolute;
+    top: -12px;           /* Moves it higher up */
+    right: -10px;         /* Moves it further to the right */
+    background-color: transparent; /* Removes the yellow background */
+    color: #f5c518;       /* Sets the number text to Gold */
+    font-size: 0.9rem;    /* Adjust size to look good without a background */
+    font-weight: 800;     /* Make it bold so it's easy to see */
+    border: none;         /* Remove the border */
+    padding: 0;           /* Remove padding so it's not huge */
+    min-width: auto;      /* Let the width fit the number exactly */
+}
 
 
 /* --- SHOP GRID --- */
