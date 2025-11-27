@@ -3,44 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FatBoy GameStop</title>
-    
+    <title>Login - FatBoy GameStop</title>
     <link rel="icon" href="images/logo.png" type="image/png">
-
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/index.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-analytics-compat.js"></script>
 </head>
 <body>
 
-    <nav id="navbar" class="hidden">
-        <div class="logo">
-            <img src="images/logo.png" alt="Logo"> FatBoy GameStop
-        </div>
-        <div class="nav-links">
-            <a href="#" id="nav-shop" onclick="app.showShop()">Shop</a>
-            <a href="#" id="nav-cart" onclick="app.showCart()">Cart <span id="cart-count">0</span></a>
-            <a href="#" id="nav-dashboard" onclick="app.showDashboard()">My Dashboard</a>
-            <a href="#" id="admin-link" class="hidden" onclick="app.showAdmin()">Admin Panel</a>
-            <a href="#" onclick="app.logout()">Logout</a>
-        </div>
-    </nav>
-
-    <div id="auth-section" class="container">
-        
-        <div class="video-background">
-            <video id="bg-video" autoplay muted loop playsinline>
-                <source src="scr/main.webm" type="video/webm">
-            </video>
-            <div class="video-overlay"></div>
-        </div>
+    <div class="video-background">
+        <video id="bg-video" autoplay muted loop playsinline>
+            <source src="scr/main.webm" type="video/webm">
+        </video>
+        <div class="video-overlay"></div>
+    </div>
 
         <header class="auth-header">
             <div class="auth-left">
                 <div class="auth-logo">
-                    <!-- <div class="avatar-circle-sm">
+                    <div class="avatar-circle-sm">
                         <img src="images/logo.png" alt="Logo">
-                    </div> -->
+                    </div>
                 </div>
                 <button onclick="app.toggleVideoSound()" class="music-btn" title="Unmute Video">
                     <i class="fas fa-volume-mute sound-icon"></i>
@@ -52,6 +40,7 @@
             </div>
         </header>
 
+    <div class="container">
         <div class="login-card">
             <div class="logo-area">
                 <div class="avatar-circle">
@@ -62,12 +51,12 @@
             
             <form id="auth-form" onsubmit="app.handleAuth(event)">
                 <div class="input-group">
-                    <label>Username</label>
-                    <input type="text" id="username" placeholder="Enter your username" required>
+                    <label>Username (used as email)</label>
+                    <input type="text" id="username" placeholder="Enter username" required>
                 </div>
                 <div class="input-group">
                     <label>Password</label>
-                    <input type="password" id="password" placeholder="Enter your password" required>
+                    <input type="password" id="password" placeholder="Enter password" required>
                 </div>
             
                 <p id="login-error" class="error-msg hidden"></p>
@@ -81,77 +70,15 @@
         </div>
     </div>
 
-    <div id="shop-section" class="main-content hidden">
-        <h1>Latest Games</h1>
-        <div id="games-grid" class="grid-container"></div>
-    </div>
-
-    <div id="cart-section" class="main-content hidden">
-        <h1>Your Cart</h1>
-        <div id="cart-items"></div>
-        <div class="cart-total">
-            <h3>Total: $<span id="total-price">0</span></h3>
-            <button class="btn-primary" onclick="app.checkout()">Buy Now</button>
-        </div>
-    </div>
-
-    <div id="dashboard-section" class="main-content hidden">
-        <div class="dashboard-header">
-            <h1>Welcome, <span id="dash-username" class="highlight-text">User</span></h1>
-            <p>Manage your account and view your library.</p>
-        </div>
-        <div class="stats-row">
-            <div class="stat-card">
-                <h3>Games Owned</h3>
-                <span id="stat-count">0</span>
-            </div>
-            <div class="stat-card">
-                <h3>Total Spent</h3>
-                <span id="stat-spent">$0.00</span>
-            </div>
-            <div class="stat-card">
-                <h3>In Cart</h3>
-                <span id="stat-cart-count">0</span>
-                <button class="btn-small" onclick="app.showCart()">Go to Cart</button>
-            </div>
-        </div>
-        <div class="history-container">
-            <h2><i class="fas fa-history"></i> Purchase History</h2>
-            <div id="user-purchase-history"></div>
-        </div>
-    </div>
-
-    <div id="admin-section" class="main-content hidden">
-        <h1>Admin Dashboard</h1>
-        <div class="admin-panel">
-            <div class="admin-col">
-                <h3 id="form-game-heading">Add New Game</h3>
-                
-                <form onsubmit="app.handleGameForm(event)" class="admin-form" id="game-form">
-                    <input type="hidden" id="edit-game-id">
-                    <input type="text" id="new-game-title" placeholder="Game Title" required>
-                    <input type="number" id="new-game-price" placeholder="Price" required>
-                    
-                    <label style="font-size:0.8rem; color:#aaa;">Game Cover Image:</label>
-                    <input type="file" id="new-game-img" accept="image/*" style="padding:5px; margin-bottom:10px;">
-                    
-                    <div style="display:flex; gap: 10px;">
-                        <button type="submit" class="btn-secondary" id="btn-save-game">Add Game</button>
-                        <button type="button" class="btn-secondary" id="btn-cancel-edit" onclick="app.cancelEdit()" style="background:#444; color:#aaa; display:none;">Cancel</button>
-                    </div>
-                </form>
-
-                <h3>Manage Games</h3>
-                <ul id="admin-game-list"></ul>
-            </div>
-            <div class="admin-col">
-                <h3>User Management</h3>
-                <div id="admin-user-list"></div>
-            </div>
-        </div>
-    </div>
-
     <script src="scrpt/database.js"></script>
     <script src="scrpt/script.js"></script>
+    <script>
+        // Check if already logged in, redirect if so
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                app.redirectUser(user.uid);
+            }
+        });
+    </script>
 </body>
 </html>

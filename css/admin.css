@@ -1,0 +1,21 @@
+/* Import User/Base styles for Navbar, Body, etc. */
+@import url('user.css'); 
+
+/* --- ADMIN PANEL SPECIFIC LAYOUT --- */
+.admin-panel { display: flex; gap: 20px; flex-wrap: wrap; }
+.admin-col { 
+    flex: 1; background: var(--app-card-bg); padding: 20px; 
+    border-radius: 8px; min-width: 300px; 
+}
+.admin-form input { 
+    width: 100%; margin-bottom: 10px; padding: 10px; 
+    box-sizing: border-box; background: var(--input-bg); 
+    border: 1px solid var(--border-color); color: white; 
+}
+.btn-secondary { 
+    background: #444; color: white; padding: 8px 15px; 
+    border: none; cursor: pointer; border-radius: 4px; 
+}
+.edit-btn { color: #3498db; cursor: pointer; margin-left: 10px; }
+
+.user-history-item { border-bottom: 1px solid #333; padding: 10px 0; font-size: 0.9rem; }
