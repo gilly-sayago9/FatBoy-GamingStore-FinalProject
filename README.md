@@ -1,8 +1,34 @@
-﻿# ap-week6-9
-admin account for testing:
-username: admin
-password: 123
+## 📋 Update Log (last update: 11/27/25)
 
-user account for testing:
-username: user
-password: 123
+## ✨ Version 3.0.0 Update Log (Cloud Integration)
+
+This release represents a major architectural shift, moving the project from LocalStorage to a **Live Cloud Database (Firebase Firestore)** and implementing critical structural and financial safeguards.
+
+### 📝 Key Features Added:
+* **Cloud Persistence:** Full migration to Firebase Firestore for user profiles, persistent carts, and history.
+* **Payment System (Mock):** Added GCash, PayMaya, and Credit Card options via a checkout modal.
+* **Strict Validation:** Implemented multiple checks during purchase:
+    * **Phone Validation:** Ensures PH mobile numbers start with `09` and are 11 digits long.
+    * **Ownership Check:** Cancels transaction if the user already owns the game.
+    * **Cart Check:** Prevents adding the same item twice to the cart.
+* **Admin Management:** Implemented full **CRUD (Create, Read, Update, Delete)** operations on games, including **image upload** and user account management.
+
+---
+
+### 🔑 ADMIN ACCESS INSTRUCTIONS
+
+To access the administrative panel, you must first **register** the account and then manually grant the role in the cloud database.
+
+| Credential | Value to Type on Login Form | Setup Note |
+| :--- | :--- | :--- |
+| **Username** | `admin` | Used to form the login email (`admin@fatboy.com`) |
+| **Password** | `admin123` | *Password set during registration.* |
+
+**Crucial Step:** After registering, you must go to **Firestore > users** and manually change the `role` field for this user's document from `"user"` to **`"admin"`**.
+
+---
+
+### ⚙️ Architectural Changes:
+* **Structural Split:** Application logic divided into three separate HTML files (`index.html`, `user_dashboard.html`, `admin_dashboard.html`).
+* **CSS Separation:** Styles were logically organized into three files (`css/index.css`, `css/user.css`, `css/admin.css`).
+* **Asynchronous Handling:** All primary functions converted to `async/await` to handle real-time database operations.
