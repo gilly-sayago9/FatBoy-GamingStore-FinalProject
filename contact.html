@@ -5,17 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact Us - FatBoy GameStop</title>
     <link rel="icon" href="images/logo.png" type="image/png">
+    
     <link rel="stylesheet" href="css/contact.css">
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script type="text/javascript">
+        (function() {
+            // ✅ PUBLIC KEY INTEGRATED HERE
+            emailjs.init("Edh9ATU-sTeLcNBsc");
+        })();
+    </script>
 </head>
 <body>
 
-    <!-- Background Image Container -->
     <div class="bg-image"></div>
     <div class="bg-overlay"></div>
 
-    <!-- Navbar -->
     <nav class="navbar">
         <div class="nav-left">
             <a href="index.html" class="logo" style="text-decoration: none;">
@@ -25,12 +33,11 @@
         </div>
         <div class="nav-right">
             <a href="about.html" class="nav-link">About</a>
-            <a href="contact.html" class="nav-link" style="color: var(--primary-yellow);">Contact Us</a>
+            <a href="contact.html" class="nav-link active">Contact Us</a>
             <a href="index.html" class="btn-login">Log In</a>
         </div>
     </nav>
 
-    <!-- Main Content -->
     <div class="container">
         
         <header class="contact-header">
@@ -42,8 +49,7 @@
         </header>
 
         <div class="contact-content">
-            <!-- Contact Form -->
-            <form class="contact-form">
+            <form class="contact-form" onsubmit="handleContactSubmit(event)">
                 <div class="form-group">
                     <label for="name">Your Name</label>
                     <input type="text" id="name" placeholder="Enter your name" required>
@@ -56,23 +62,63 @@
                     <label for="message">Message</label>
                     <textarea id="message" rows="5" placeholder="How can we help?" required></textarea>
                 </div>
-                <button type="submit" class="btn-submit">Send Message</button>
+                
+                <button type="submit" id="btn-submit" class="btn-submit">Send Message</button>
             </form>
 
-            <!-- Quick Info (Optional side text or bottom text) -->
             <div class="contact-info">
                 <div class="info-item">
-                    <i class="fas fa-envelope"></i>
-                    <span>support@fatboygamestop.com</span>
+                    <div class="icon-circle">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <span>fatboygaming999@gmail.com</span>
                 </div>
                 <div class="info-item">
-                    <i class="fas fa-map-marker-alt"></i>
-                    <span>123 Gamer St, Level 99</span>
+                    <div class="icon-circle">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <span>Poblacion, Argao, Cebu</span>
                 </div>
             </div>
         </div>
 
     </div>
+
+    <script>
+        function handleContactSubmit(e) {
+            e.preventDefault(); 
+
+            const btn = document.getElementById('btn-submit');
+            const originalText = btn.innerText;
+            btn.innerText = "Sending...";
+            btn.disabled = true;
+
+            const params = {
+                name: document.getElementById('name').value,
+                reply_to: document.getElementById('email').value, 
+                message: document.getElementById('message').value,
+                time: new Date().toLocaleString()
+            };
+
+           
+            const serviceID = "service_jh2cxyl";
+            const templateID = "template_15c1yu5"; 
+
+            emailjs.send(serviceID, templateID, params)
+                .then(() => {
+                    alert("Message Sent Successfully! We will get back to you soon.");
+                    e.target.reset(); 
+                })
+                .catch((err) => {
+                    alert("Failed to send message. Check console for details.");
+                    console.error("EmailJS Error:", err);
+                })
+                .finally(() => {
+                    btn.innerText = originalText;
+                    btn.disabled = false;
+                });
+        }
+    </script>
 
 </body>
 </html>
