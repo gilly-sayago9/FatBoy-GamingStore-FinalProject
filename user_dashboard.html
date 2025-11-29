@@ -41,9 +41,23 @@
     </div>
     <div id="dashboard-section" class="main-content hidden">
         <div class="dashboard-header"><h1>Welcome, <span id="dash-username" class="highlight-text">User</span></h1><p>Manage your account and view your library.</p></div>
-        <div class="stats-row"><div class="stat-card"><h3>Games Owned</h3><span id="stat-count">0</span></div><div class="stat-card"><h3>Total Spent</h3><span id="stat-spent">$0.00</span></div><div class="stat-card"><h3>In Cart</h3><span id="stat-cart-count">0</span><button class="btn-small" onclick="app.showCart()">Go to Cart</button></div></div>
+        <div class="stats-row"><div class="stat-card">
+                <h3>Games Owned</h3>
+                <span id="stat-count">0</span>
+                <button class="btn-small" onclick="app.showLibrary()">View Library</button>
+        </div>
+        <div class="stat-card"><h3>Total Spent</h3><span id="stat-spent">$0.00</span></div><div class="stat-card"><h3>In Cart</h3><span id="stat-cart-count">0</span><button class="btn-small" onclick="app.showCart()">Go to Cart</button></div></div>
         <div class="history-container"><h2><i class="fas fa-history"></i> Purchase History</h2><div id="user-purchase-history"></div></div>
-    </div>
+      </div>
+            <div id="library-section" class="main-content hidden">
+            <h1 class="section-title">My Game Library</h1>
+            <div id="library-grid" class="grid-container">
+                </div>
+            <div style="text-align: center; margin-top: 20px;">
+                <button onclick="app.showDashboard()" class="btn-small">Back to Dashboard</button>
+            </div>
+        </div>
+
     <div id="payment-modal" class="hidden">
         <div class="modal-content">
             <h2 style="margin-top:0; color:white;">Checkout</h2>

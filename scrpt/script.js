@@ -623,6 +623,37 @@ const app = {
     app.renderUserDashboard();
   },
 
+  showLibrary: () => {
+    app.hideAll();
+    console.log("being called")
+    document.getElementById("library-section").classList.remove("hidden");
+    app.renderUserLibrary();
+  },
+
+  renderUserLibrary: async () => {
+    const user = app.currentUser;
+    const history = user.history || [];
+
+    const ownedIds = new Set();
+    history.forEach((order) => {
+      order.items.forEach((item) => {
+        ownedIds.add(item.id);
+      });
+    });
+
+    const libraryGrid = document.getElementById("library-grid");
+    if (ownedIds.size === 0) {
+      libraryGrid.innerHTML =
+        '<p style="text-align:center; color:#aaa; padding: 40px;">Your library is empty. Go buy some games!</p>';
+      return;
+    }
+
+    const allGames = await database.getGames();
+    const libraryGames = allGames.filter((game) => ownedIds.has(game.id));
+
+    // RENDER LIBRARY: Sets isLibrary flag to TRUE
+    app.renderGameList(libraryGames, "library-grid", true);
+  },
   renderUserDashboard: () => {
     const user = app.currentUser;
     if (!document.getElementById("dash-username")) return;
