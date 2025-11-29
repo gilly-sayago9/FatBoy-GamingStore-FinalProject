@@ -16,9 +16,7 @@
 <body>
     <div class="admin-wrapper">
         <aside class="sidebar">
-            <div class="sidebar-header">
-                <div class="admin-profile"><img src="images/logo.png" alt="Admin"><span>Admin Panel</span></div>
-            </div>
+            <div class="sidebar-header"><div class="admin-profile"><img src="images/logo.png" alt="Admin"><span>Admin Panel</span></div></div>
             <nav class="sidebar-menu">
                 <button onclick="admin.switchTab('overview')" id="btn-overview" class="active"><i class="fas fa-chart-pie"></i> Analytics</button>
                 <button onclick="admin.switchTab('games')" id="btn-games"><i class="fas fa-gamepad"></i> Manage Games</button>
@@ -55,12 +53,7 @@
                             <button type="button" class="btn-secondary hidden" id="btn-cancel" onclick="admin.resetGameForm()">Cancel</button>
                         </form>
                     </div>
-                    <div class="card table-card-full">
-                        <h3>Current Games</h3>
-                        <div class="table-responsive">
-                            <table><thead><tr><th>Image</th><th>Title</th><th>Price</th><th>Actions</th></tr></thead><tbody id="games-table-body"></tbody></table>
-                        </div>
-                    </div>
+                    <div class="card table-card-full"><h3>Current Games</h3><div class="table-responsive"><table><thead><tr><th>Image</th><th>Title</th><th>Price</th><th>Actions</th></tr></thead><tbody id="games-table-body"></tbody></table></div></div>
                 </div>
             </section>
             <section id="view-users" class="view-section hidden">

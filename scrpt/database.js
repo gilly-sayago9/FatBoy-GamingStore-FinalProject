@@ -48,6 +48,22 @@ const database = {
         }
     },
 
+    // Find User by Username (for Login)
+    findUserByUsername: async (username) => {
+        try {
+            const snapshot = await db.collection('users')
+                .where('username', '==', username)
+                .limit(1)
+                .get();
+            
+            if (snapshot.empty) return null;
+            return snapshot.docs[0].data();
+        } catch (error) {
+            console.error("Error finding username:", error);
+            return null;
+        }
+    },
+
     getGames: async () => {
         try {
             const snapshot = await db.collection('games').get();
@@ -59,7 +75,6 @@ const database = {
     },
 
     saveGameToDB: async (game) => {
-        // Saves the text data (Title, Price, Image URL) to Firebase
         await db.collection('games').doc(String(game.id)).set(game, { merge: true });
     },
 
@@ -103,7 +118,7 @@ const database = {
             if (!response.ok) throw new Error("Cloudinary Upload Failed");
 
             const data = await response.json();
-            return data.secure_url; // Returns the HTTPS link to the image
+            return data.secure_url; 
         } catch (error) {
             console.error("Upload Error:", error);
             alert("Failed to upload image. Check console.");

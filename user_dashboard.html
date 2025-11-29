@@ -4,122 +4,61 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - FatBoy GameStop</title>
-  <link rel="icon" href="images/logo.png?v=2" type="image/png" sizes="32x32">
+    <link rel="icon" href="images/logo.png?v=2" type="image/png" sizes="32x32">
     <link rel="stylesheet" href="css/user.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-analytics-compat.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script type="text/javascript">
+        (function() {
+            emailjs.init("Edh9ATU-sTeLcNBsc");
+        })();
+    </script>
 </head>
 <body>
-
     <nav id="navbar">
-        <div class="logo">
-            <img src="images/logo.png" alt="Logo"> 
-            <span class="logo-text">FatBoy GameStop</span>
-        </div>
+        <div class="logo"><img src="images/logo.png" alt="Logo"><span class="logo-text">FatBoy GameStop</span></div>
         <div class="nav-links">
             <a href="#" onclick="app.showShop()" title="Shop"><i class="fas fa-store"></i></a>
-            <a href="#" onclick="app.showCart()" class="cart-btn" title="Cart">
-                <i class="fas fa-shopping-cart"></i>
-                <span id="cart-count" class="cart-badge">0</span>
-            </a>
+            <a href="#" onclick="app.showCart()" class="cart-btn" title="Cart"><i class="fas fa-shopping-cart"></i><span id="cart-count" class="cart-badge">0</span></a>
             <a href="#" onclick="app.showDashboard()" title="My Dashboard"><i class="fas fa-user-circle"></i></a>
             <a href="#" onclick="app.logout()" title="Logout"><i class="fas fa-sign-out-alt"></i></a>
         </div>
     </nav>
-
     <div id="shop-section" class="main-content">
-        <div class="shop-header-centered">
-            <div class="search-container">
-                <i class="fas fa-search search-icon"></i>
-                <input type="text" id="search-input" placeholder="Search for games..." onkeyup="app.handleSearch()">
-            </div>
-        </div>
-
-        <div id="browsing-view">
-            <h1 class="section-title center-text">Popular Games</h1>
-            <div id="games-grid" class="grid-container"></div>
-        </div>
-
-        <div id="search-view" class="hidden">
-            <h1 class="section-title center-text">Search Results</h1>
-            <div id="search-results-grid" class="grid-container"></div>
-            <div style="text-align: center; margin-top: 20px;">
-                <button onclick="app.clearSearch()" class="btn-small">Back to Shop</button>
-            </div>
-        </div>
+        <div class="shop-header-centered"><div class="search-container"><i class="fas fa-search search-icon"></i><input type="text" id="search-input" placeholder="Search for games..." onkeyup="app.handleSearch()"></div></div>
+        <div id="browsing-view"><h1 class="section-title center-text">Popular Games</h1><div id="games-grid" class="grid-container"></div></div>
+        <div id="search-view" class="hidden"><h1 class="section-title center-text">Search Results</h1><div id="search-results-grid" class="grid-container"></div><div style="text-align: center; margin-top: 20px;"><button onclick="app.clearSearch()" class="btn-small">Back to Shop</button></div></div>
     </div>
-
     <div id="cart-section" class="main-content hidden">
-        <h1>Your Cart</h1>
-        <div id="cart-items"></div>
-        <div class="cart-total">
-            <h3>Total: $<span id="total-price">0</span></h3>
-            <button class="btn-primary" onclick="app.openPaymentModal()">Checkout</button>
-        </div>
+        <h1>Your Cart</h1><div id="cart-items"></div><div class="cart-total"><h3>Total: $<span id="total-price">0.00</span></h3><button class="btn-primary" onclick="app.openPaymentModal()">Checkout</button></div>
     </div>
-
     <div id="dashboard-section" class="main-content hidden">
-        <div class="dashboard-header">
-            <h1>Welcome, <span id="dash-username" class="highlight-text">User</span></h1>
-            <p>Manage your account and view your library.</p>
-        </div>
-        <div class="stats-row">
-            <div class="stat-card">
-                <h3>Games Owned</h3>
-                <span id="stat-count">0</span>
-            </div>
-            <div class="stat-card">
-                <h3>Total Spent</h3>
-                <span id="stat-spent">$0.00</span>
-            </div>
-            <div class="stat-card">
-                <h3>In Cart</h3>
-                <span id="stat-cart-count">0</span>
-                <button class="btn-small" onclick="app.showCart()">Go to Cart</button>
-            </div>
-        </div>
-        <div class="history-container">
-            <h2><i class="fas fa-history"></i> Purchase History</h2>
-            <div id="user-purchase-history"></div>
-        </div>
+        <div class="dashboard-header"><h1>Welcome, <span id="dash-username" class="highlight-text">User</span></h1><p>Manage your account and view your library.</p></div>
+        <div class="stats-row"><div class="stat-card"><h3>Games Owned</h3><span id="stat-count">0</span></div><div class="stat-card"><h3>Total Spent</h3><span id="stat-spent">$0.00</span></div><div class="stat-card"><h3>In Cart</h3><span id="stat-cart-count">0</span><button class="btn-small" onclick="app.showCart()">Go to Cart</button></div></div>
+        <div class="history-container"><h2><i class="fas fa-history"></i> Purchase History</h2><div id="user-purchase-history"></div></div>
     </div>
-
     <div id="payment-modal" class="hidden">
         <div class="modal-content">
             <h2 style="margin-top:0; color:white;">Checkout</h2>
-            <div style="margin-bottom:20px;">
-                <h3 style="color:#aaa; font-size:0.9rem;">Total Amount</h3>
-                <span id="checkout-total" style="font-size:2rem; font-weight:bold; color:#facc15;">$0.00</span>
-            </div>
+            <div style="margin-bottom:20px;"><h3 style="color:#aaa; font-size:0.9rem;">Total Amount</h3><span id="checkout-total" style="font-size:2rem; font-weight:bold; color:#facc15;">$0.00</span></div>
             <h3 style="color:#aaa; font-size:0.9rem; margin-bottom:10px;">Select Payment Method</h3>
-            <select id="payment-method" onchange="app.togglePaymentFields()" style="width:100%; padding:10px; background:#27272a; color:white; border:1px solid #333; border-radius:6px; margin-bottom:15px;">
-                <option value="">-- Choose --</option>
-                <option value="gcash">GCash</option>
-                <option value="paymaya">PayMaya</option>
-                <option value="card">Credit/Debit Card</option>
-            </select>
+            <select id="payment-method" onchange="app.togglePaymentFields()" style="width:100%; padding:10px; background:#27272a; color:white; border:1px solid #333; border-radius:6px; margin-bottom:15px;"><option value="">-- Choose --</option><option value="gcash">GCash</option><option value="paymaya">PayMaya</option><option value="card">Credit/Debit Card</option></select>
             <div id="payment-fields"></div>
-            <div style="display:flex; gap:10px; margin-top:20px;">
-                <button onclick="app.processPayment()" class="btn-primary" style="flex:1;">Pay Now</button>
-                <button onclick="document.getElementById('payment-modal').classList.add('hidden')" class="btn-secondary" style="background:#333; color:white;">Cancel</button>
-            </div>
+            <div style="display:flex; gap:10px; margin-top:20px;"><button onclick="app.processPayment()" class="btn-primary" style="flex:1;">Pay Now</button><button onclick="document.getElementById('payment-modal').classList.add('hidden')" class="btn-secondary" style="background:#333; color:white;">Cancel</button></div>
         </div>
     </div>
-
     <script src="scrpt/database.js"></script>
     <script src="scrpt/script.js"></script>
     <script>
-        auth.onAuthStateChanged(async user => {
-            if (user) {
-                await app.checkUserRole('user', user.uid);
-            } else {
-                window.location.href = 'index.html';
-            }
+        firebase.auth().onAuthStateChanged(async user => {
+            // ONLY redirect if verified
+            if (user && user.emailVerified) { await app.checkUserRole('user', user.uid); } 
+            else if (window.location.pathname.includes('dashboard')) { window.location.href = 'index.html'; }
         });
     </script>
 </body>

@@ -4,95 +4,40 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - FatBoy GameStop</title>
-  <link rel="icon" href="images/logo.png?v=2" type="image/png" sizes="32x32">
+    <link rel="icon" href="images/logo.png?v=2" type="image/png" sizes="32x32">
     <link rel="stylesheet" href="css/index.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-analytics-compat.js"></script>
 </head>
 <body>
-
-    <!-- <div class="video-background">
-        <video id="bg-video" autoplay muted loop playsinline>
-            <source src="scr/" type="video/webm">
-        </video>
-        <div class="video-overlay"></div>
-    </div> -->
-
-
-    <div class="video-background">
-        <iframe 
-            id="bg-video" 
-            src="https://www.youtube.com/embed/DKsj5mCR7qs?autoplay=1&mute=1&controls=0&loop=1&playlist=DKsj5mCR7qs&showinfo=0&rel=0&iv_load_policy=3&disablekb=1" 
-            frameborder="0" 
-            allow="autoplay; encrypted-media" 
-            allowfullscreen>
-        </iframe>
-        <div class="video-overlay"></div>
-    </div>
-
+    <div class="video-background"><iframe id="bg-video" src="https://www.youtube.com/embed/DKsj5mCR7qs?autoplay=1&mute=1&controls=0&loop=1&playlist=DKsj5mCR7qs&showinfo=0&rel=0&iv_load_policy=3&disablekb=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe><div class="video-overlay"></div></div>
     <nav class="navbar">
-        <div class="nav-left">
-            <div class="logo">
-                <img src="images/logo.png" alt="Logo"> 
-                <span class="logo-text">FatBoy GameStop</span>
-                <!-- <button onclick="app.toggleVideoSound()" class="music-btn" title="Unmute Video">
-                    <i class="fas fa-volume-mute sound-icon"></i>
-                </button> -->
-            </div>
-        </div>
-        <div class="nav-right">
-            <a href="about.html" class="nav-link">About</a>
-            <a href="contact.html" class="nav-link">Contact Us</a>
-        </div>
+        <div class="nav-left"><div class="logo"><img src="images/logo.png" alt="Logo"><span class="logo-text">FatBoy GameStop</span></div></div>
+        <div class="nav-right"><a href="about.html" class="nav-link">About</a><a href="contact.html" class="nav-link">Contact Us</a></div>
     </nav>
-
     <div class="container">
         <div class="login-card">
-            <div class="logo-area">
-                <div class="avatar-circle">
-                    <img src="images/logo.png" alt="Logo">
-                </div>
-            </div>
+            <div class="logo-area"><div class="avatar-circle"><img src="images/logo.png" alt="Logo"></div></div>
             <h2 id="auth-title">Log in to continue</h2>
             
+            <p id="auth-success" class="success-msg hidden"></p>
+            
             <form id="auth-form" onsubmit="app.handleAuth(event)">
-                <div class="input-group">
-                    <label>Username</label>
-                    <input type="text" id="username" placeholder="Enter username" required>
-                </div>
-                <div class="input-group">
-                    <label>Password</label>
-                    <div class="password-wrapper">
-                        <input type="password" id="password" placeholder="Enter password" required>
-                        <i class="fas fa-eye" id="togglePassword"></i>
-                    </div>
-                </div>
-            
+                <div class="input-group"><label id="login-label">Username or Email</label><input type="text" id="login-input" placeholder="Enter username or email" required></div>
+                <div class="input-group hidden" id="email-group"><label>Email Address</label><input type="email" id="email" placeholder="Enter your email (e.g. gmail)"></div>
+                <div class="input-group"><label>Password</label><div class="password-wrapper"><input type="password" id="password" placeholder="Enter password" required><i class="fas fa-eye toggle-password" data-target="password"></i></div></div>
+                <div class="input-group hidden" id="confirm-password-group"><label>Confirm Password</label><div class="password-wrapper"><input type="password" id="confirm-password" placeholder="Re-enter password"><i class="fas fa-eye toggle-password" data-target="confirm-password"></i></div></div>
                 <p id="login-error" class="error-msg hidden"></p>
-            
                 <button type="submit" class="btn-primary">Log in</button>
             </form>
-            
-            <p class="switch-auth">
-                <a href="#" onclick="app.toggleAuthMode()" id="auth-switch-text">Create an account</a>
-            </p>
+            <p class="switch-auth"><a href="#" onclick="app.toggleAuthMode()" id="auth-switch-text">Create an account</a></p>
         </div>
     </div>
-
     <script src="scrpt/database.js"></script>
     <script src="scrpt/script.js"></script>
-    <script>
-        // Check if already logged in, redirect if so
-        auth.onAuthStateChanged(user => {
-            if (user) {
-                app.redirectUser(user.uid);
-            }
-        });
-    </script>
 </body>
 </html>
