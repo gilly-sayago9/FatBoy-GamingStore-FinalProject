@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - FatBoy GameStop</title>
-    <link rel="icon" href="images/logo.png" type="image/png">
+  <link rel="icon" href="images/logo.png?v=2" type="image/png" sizes="32x32">
     <link rel="stylesheet" href="css/user.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
@@ -22,28 +22,36 @@
             <span class="logo-text">FatBoy GameStop</span>
         </div>
         <div class="nav-links">
-            <a href="#" onclick="app.showShop()" title="Shop">
-                <i class="fas fa-store"></i>
-            </a>
-        
+            <a href="#" onclick="app.showShop()" title="Shop"><i class="fas fa-store"></i></a>
             <a href="#" onclick="app.showCart()" class="cart-btn" title="Cart">
                 <i class="fas fa-shopping-cart"></i>
                 <span id="cart-count" class="cart-badge">0</span>
             </a>
-        
-            <a href="#" onclick="app.showDashboard()" title="My Dashboard">
-                <i class="fas fa-user-circle"></i>
-            </a>
-        
-            <a href="#" onclick="app.logout()" title="Logout">
-                <i class="fas fa-sign-out-alt"></i>
-            </a>
+            <a href="#" onclick="app.showDashboard()" title="My Dashboard"><i class="fas fa-user-circle"></i></a>
+            <a href="#" onclick="app.logout()" title="Logout"><i class="fas fa-sign-out-alt"></i></a>
         </div>
     </nav>
 
     <div id="shop-section" class="main-content">
-        <h1>Latest Games</h1>
-        <div id="games-grid" class="grid-container"></div>
+        <div class="shop-header-centered">
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" id="search-input" placeholder="Search for games..." onkeyup="app.handleSearch()">
+            </div>
+        </div>
+
+        <div id="browsing-view">
+            <h1 class="section-title center-text">Popular Games</h1>
+            <div id="games-grid" class="grid-container"></div>
+        </div>
+
+        <div id="search-view" class="hidden">
+            <h1 class="section-title center-text">Search Results</h1>
+            <div id="search-results-grid" class="grid-container"></div>
+            <div style="text-align: center; margin-top: 20px;">
+                <button onclick="app.clearSearch()" class="btn-small">Back to Shop</button>
+            </div>
+        </div>
     </div>
 
     <div id="cart-section" class="main-content hidden">
@@ -106,7 +114,6 @@
     <script src="scrpt/database.js"></script>
     <script src="scrpt/script.js"></script>
     <script>
-        // Init logic for User Dashboard
         auth.onAuthStateChanged(async user => {
             if (user) {
                 await app.checkUserRole('user', user.uid);

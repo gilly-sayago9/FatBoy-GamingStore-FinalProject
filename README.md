@@ -1,34 +1,43 @@
-## 📋 Update Log (last update: 11/27/25)
+# 📋 Project Changelog
 
-## ✨ Version 3.0.0 Update Log (Cloud Integration)
-
-This release represents a major architectural shift, moving the project from LocalStorage to a **Live Cloud Database (Firebase Firestore)** and implementing critical structural and financial safeguards.
-
-### 📝 Key Features Added:
-* **Cloud Persistence:** Full migration to Firebase Firestore for user profiles, persistent carts, and history.
-* **Payment System (Mock):** Added GCash, PayMaya, and Credit Card options via a checkout modal.
-* **Strict Validation:** Implemented multiple checks during purchase:
-    * **Phone Validation:** Ensures PH mobile numbers start with `09` and are 11 digits long.
-    * **Ownership Check:** Cancels transaction if the user already owns the game.
-    * **Cart Check:** Prevents adding the same item twice to the cart.
-* **Admin Management:** Implemented full **CRUD (Create, Read, Update, Delete)** operations on games, including **image upload** and user account management.
+### 🚀 Update v3.1.0 - Contact Integration & Enhanced Security
+*(Current Build)*
+* **Contact System:** Integrated **EmailJS** to enable real-time email functionality for the "Contact Us" form.
+* **Smart Validation:** Implemented regex enforcement for PH mobile numbers (`09...`) and inventory checks to prevent duplicate purchases.
+* **UI/UX Consistency:** Standardized the Dark & Gold theme across all modals, inputs, and email templates.
+* **Status:** 🟢 **Production Ready** - Core functionality, database integration, and deployment standards met.
 
 ---
 
-### 🔑 ADMIN ACCESS INSTRUCTIONS
+### ☁️ Version 3.0.0 - Cloud Migration & Architecture
+* **Cloud Persistence:** Migrated from LocalStorage to **Firebase Firestore** for robust data management (Users, Games, History).
+* **Architecture Refactor:** Split the codebase from a Single Page Application into distinct, secure pages (`index.html`, `user_dashboard.html`, `admin_dashboard.html`).
+* **Payment Simulation:** Added a Checkout Modal supporting mock GCash, PayMaya, and Credit Card inputs.
+* **Admin Access:** Implemented role-based routing (Admins are automatically redirected to their specific dashboard upon login).
 
-To access the administrative panel, you must first **register** the account and then manually grant the role in the cloud database.
-
-| Credential | Value to Type on Login Form | Setup Note |
-| :--- | :--- | :--- |
-| **Username** | `admin` | Used to form the login email (`admin@fatboy.com`) |
-| **Password** | `admin123` | *Password set during registration.* |
-
-**Crucial Step:** After registering, you must go to **Firestore > users** and manually change the `role` field for this user's document from `"user"` to **`"admin"`**.
+> **🔑 ADMIN ACCESS INSTRUCTIONS**
+>
+> To access the administrative panel, you must first **register** an account and then manually grant the role in the cloud database.
+>
+> | Credential | Value | Note |
+> | :--- | :--- | :--- |
+> | **Username** | `admin` | Used to form the login email |
+> | **Password** | `admin123` | *Set this during registration* |
+>
+> **Crucial Step:** After registering, go to **Firestore > users** and manually change the `role` field for this user document from `"user"` to **`"admin"`**.
 
 ---
 
-### ⚙️ Architectural Changes:
-* **Structural Split:** Application logic divided into three separate HTML files (`index.html`, `user_dashboard.html`, `admin_dashboard.html`).
-* **CSS Separation:** Styles were logically organized into three files (`css/index.css`, `css/user.css`, `css/admin.css`).
-* **Asynchronous Handling:** All primary functions converted to `async/await` to handle real-time database operations.
+### 🛠️ Version 2.0.0 - Admin Management & CRUD
+* **Admin Dashboard:** Launched full **CRUD (Create, Read, Update, Delete)** capabilities for game inventory.
+* **Image Handling:** Added support for uploading game cover images via File Input (converted to Base64/Storage).
+* **User Management:** Added ability for Admins to view all registered users and delete accounts.
+* **Cart Logic:** Implemented "Remove Item" functionality and dynamic total calculation.
+
+---
+
+### 📦 Version 1.0.0 - Initial Prototype
+* **Project Setup:** Initial HTML/CSS structure established with a responsive dark-themed layout.
+* **Authentication Simulation:** Basic Login/Register forms created using browser **LocalStorage**.
+* **Shop Interface:** Grid layout for displaying game products.
+* **Database:** Initialized mock data structure for Games and Users.
