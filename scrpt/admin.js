@@ -267,24 +267,27 @@ const admin = {
     document.getElementById("btn-cancel").classList.add("hidden");
   },
 
-  renderUsersTable: (users) => {
-    const tbody = document.getElementById("users-table-body");
-    const customers = users.filter((u) => u.role !== "admin");
-    if (customers.length === 0) {
-      tbody.innerHTML =
-        '<tr><td colspan="5" style="text-align:center;">No registered users found.</td></tr>';
-      return;
-    }
-    tbody.innerHTML = customers
-      .map((u) => {
-        const totalSpent = (u.history || []).reduce(
-          (sum, order) => sum + order.total,
-          0,
-        );
-        return `<tr><td><div style="display:flex; align-items:center; gap:10px;"><div style="width:30px; height:30px; background:#3b82f6; color:white; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold;">${u.username.charAt(0).toUpperCase()}</div><span style="font-weight:600; color:white;">${u.username}</span></div></td><td><span class="user-badge">${u.role}</span></td><td>${u.history ? u.history.length : 0} Orders</td><td style="font-weight:bold;">$${totalSpent.toFixed(2)}</td><td><button class="action-btn btn-delete" onclick="admin.deleteUser('${u.username}')"><i class="fas fa-trash"></i></button></td></tr>`;
-      })
-      .join("");
-  },
+ renderUsersTable: (users) => {
+        const tbody = document.getElementById('users-table-body');
+        const customers = users.filter(u => u.role !== 'admin');
+        if (customers.length === 0) { 
+          
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">No registered users found.</td></tr>'; 
+            return; 
+        }
+        
+        tbody.innerHTML = customers.map(u => {
+            const totalSpent = (u.history || []).reduce((sum, order) => sum + order.total, 0);
+            return `
+            <tr>
+                <td><div style="display:flex; align-items:center; gap:10px;"><div style="width:30px; height:30px; background:#3b82f6; color:white; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold;">${u.username.charAt(0).toUpperCase()}</div><span style="font-weight:600; color:white;">${u.username}</span></div></td>
+                <td><span class="user-badge">${u.role}</span></td>
+                <td style="font-size: 0.9em; color: #60a5fa;">${u.email || 'N/A'}</td> <td>${u.history ? u.history.length : 0} Orders</td>
+                <td style="font-weight:bold;">$${totalSpent.toFixed(2)}</td>
+                <td><button class="action-btn btn-delete" onclick="admin.deleteUser('${u.username}')"><i class="fas fa-trash"></i></button></td>
+            </tr>`;
+        }).join('');
+    },
 
   deleteUser: async (username) => {
     const result = await Swal.fire({
@@ -313,4 +316,5 @@ const admin = {
     auth.signOut().then(() => (window.location.href = "index.html"));
   },
 };
+
 
