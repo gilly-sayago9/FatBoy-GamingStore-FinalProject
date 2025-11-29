@@ -8,6 +8,33 @@
     --input-bg: #27272a;
     --border-color: #333;
 }
+/* Wrapper to hold input and icon together */
+.password-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+/* Adjust input to make room for the icon so text doesn't overlap */
+.password-wrapper input {
+    width: 100%;
+    padding-right: 40px; /* Space for the icon */
+}
+
+/* Position the eye icon */
+.password-wrapper i {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%); /* Centers vertically */
+    cursor: pointer;
+    color: #a0a0a0; /* Grey color matches your theme */
+    transition: color 0.3s ease;
+}
+
+/* Hover effect for the icon */
+.password-wrapper i:hover {
+    color: #f5c518; /* Your theme's Yellow color */
+}
 
 body {
     margin: 0;
@@ -36,10 +63,42 @@ body {
     position: relative; 
     box-sizing: border-box;    /* Ensures padding doesn't break width */
 }
+/* Wrapper to hold the video fixed */
+.video-background {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    overflow: hidden; /* Cuts off the zoomed-in edges */
+    z-index: -99;
+}
 
-.video-background { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
+/* The YouTube Iframe */
+.video-background iframe {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100vw;
+    height: 100vh;
+    
+    /* Center the video and ZOOM IN to hide controls/black bars */
+    transform: translate(-50%, -50%) scale(1.35); 
+    
+    /* CRITICAL: Makes the video unclickable so you can click the login form */
+    pointer-events: none; 
+}
+
+/* Keep your overlay the same */
+.video-overlay {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.6); /* Adjust darkness here */
+    pointer-events: none;
+}
+
+/* .video-background {background-color: #ea5743; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
 .video-background video { width: 100%; height: 100%; object-fit: cover; }
-.video-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); z-index: 0; }
+.video-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); z-index: 0; } */
 
 .navbar {
     display: flex;

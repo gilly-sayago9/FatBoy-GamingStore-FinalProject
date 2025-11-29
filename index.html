@@ -16,10 +16,22 @@
 </head>
 <body>
 
-    <div class="video-background">
+    <!-- <div class="video-background">
         <video id="bg-video" autoplay muted loop playsinline>
-            <source src="scr/main.webm" type="video/webm">
+            <source src="scr/" type="video/webm">
         </video>
+        <div class="video-overlay"></div>
+    </div> -->
+
+
+    <div class="video-background">
+        <iframe 
+            id="bg-video" 
+            src="https://www.youtube.com/embed/DKsj5mCR7qs?autoplay=1&mute=1&controls=0&loop=1&playlist=DKsj5mCR7qs&showinfo=0&rel=0&iv_load_policy=3&disablekb=1" 
+            frameborder="0" 
+            allow="autoplay; encrypted-media" 
+            allowfullscreen>
+        </iframe>
         <div class="video-overlay"></div>
     </div>
 
@@ -28,9 +40,9 @@
             <div class="logo">
                 <img src="images/logo.png" alt="Logo"> 
                 <span class="logo-text">FatBoy GameStop</span>
-                <button onclick="app.toggleVideoSound()" class="music-btn" title="Unmute Video">
+                <!-- <button onclick="app.toggleVideoSound()" class="music-btn" title="Unmute Video">
                     <i class="fas fa-volume-mute sound-icon"></i>
-                </button>
+                </button> -->
             </div>
         </div>
         <div class="nav-right">
@@ -55,7 +67,10 @@
                 </div>
                 <div class="input-group">
                     <label>Password</label>
-                    <input type="password" id="password" placeholder="Enter password" required>
+                    <div class="password-wrapper">
+                        <input type="password" id="password" placeholder="Enter password" required>
+                        <i class="fas fa-eye" id="togglePassword"></i>
+                    </div>
                 </div>
             
                 <p id="login-error" class="error-msg hidden"></p>
