@@ -60,7 +60,7 @@
             </section>
             <section id="view-users" class="view-section hidden">
                 <h1 class="page-title">User Management</h1>
-                <div class="card"><div class="table-responsive"><table><thead><tr><th>User</th><th>Role</th><th>Purchases</th><th>Total Spent</th><th>Action</th></tr></thead><tbody id="users-table-body"></tbody></table></div></div>
+                <div class="card"><div class="table-responsive"><table><thead><tr><th>User</th><th>Email</th><th>Role</th><th>Purchases</th><th>Total Spent</th><th>Action</th></tr></thead><tbody id="users-table-body"></tbody></table></div></div>
             </section>
         </main>
     </div>
@@ -69,3 +69,4 @@
     <script>auth.onAuthStateChanged(async user => { if (user) { const userData = await database.getUser(user.uid); if (userData && userData.role === 'admin') { admin.init(); } else { window.location.href = 'index.html'; } } else { window.location.href = 'index.html'; } });</script>
 </body>
 </html>
+
