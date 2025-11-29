@@ -1,5 +1,23 @@
 :root { --bg-color: #050505; --app-card-bg: #111111; --text-color: #ffffff; --text-muted: #a1a1aa; --primary-yellow: #facc15; --primary-hover: #eab308; --input-bg: #27272a; --border-color: #333; }
-body { margin: 0; font-family: 'Inter', sans-serif; background-color: var(--bg-color); color: var(--text-color); display: flex; flex-direction: column; min-height: 100vh; }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box; /* This prevents padding from making boxes wider */
+}
+
+/* 2. Update your existing 'body' rule with this line */
+body {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    
+    /* ADD THIS LINE TO KILL THE SCROLL BAR */
+    overflow-x: hidden; 
+}
 .hidden { display: none !important; }
 .main-content { padding: 80px 20px 20px; max-width: 1200px; margin: 0 auto; width: 100%; }
 nav { position: fixed; top: 0; width: 100%; background: var(--app-card-bg); padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); z-index: 1000; box-sizing: border-box; }
@@ -12,7 +30,7 @@ nav { position: fixed; top: 0; width: 100%; background: var(--app-card-bg); padd
 .nav-links a:hover { color: #f5c518; }
 .cart-badge { position: absolute; top: -12px; right: -10px; background-color: transparent; color: #f5c518; font-size: 0.9rem; font-weight: 800; border: none; padding: 0; min-width: auto; }
 .shop-header-centered { display: flex; justify-content: center; align-items: center; margin-bottom: 40px; width: 100%; }
-.search-container { position: relative; width: 100%; max-width: 500px; }
+.search-container { position: relative; width: 100%; max-width: 500px; margin-top: 50px;}
 .search-container input { width: 100%; padding: 15px 20px 15px 50px; background: var(--app-card-bg); border: 1px solid var(--border-color); border-radius: 30px; color: white; font-size: 1rem; outline: none; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
 .search-container input:focus { border-color: var(--primary-yellow); box-shadow: 0 0 15px rgba(250, 204, 21, 0.3); transform: scale(1.02); }
 .search-icon { position: absolute; left: 20px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 1.1rem; }
@@ -51,3 +69,107 @@ nav { position: fixed; top: 0; width: 100%; background: var(--app-card-bg); padd
 .btn-primary:hover { background-color: var(--primary-hover); }
 #payment-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 100; display: flex; justify-content: center; align-items: center; }
 .modal-content { background: var(--app-card-bg); padding: 30px; border-radius: 12px; width: 400px; border: 1px solid #333; }
+
+/* --- FOOTER STYLES --- */
+.site-footer {
+    background-color: var(--app-card-bg);
+    border-top: 1px solid var(--border-color);
+    padding: 50px 20px 20px;
+    margin-top: 105px; /* Pushes footer to bottom if content is short */
+    width: 100%;
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 30px;
+    margin-bottom: 30px;
+}
+
+/* Brand Section */
+.footer-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: white;
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+.footer-brand img {
+    height: 35px;
+    width: 35px;
+    border-radius: 50%;
+}
+
+/* Links Section */
+.footer-links {
+    display: flex;
+    gap: 25px;
+    flex-wrap: wrap;
+}
+.footer-links a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: color 0.3s;
+}
+.footer-links a:hover {
+    color: var(--primary-yellow);
+}
+
+/* Social Icons */
+.footer-social {
+    display: flex;
+    gap: 15px;
+}
+.footer-social a {
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.05);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    color: white;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+}
+.footer-social a:hover {
+    background: var(--primary-yellow);
+    color: black;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(250, 204, 21, 0.3);
+}
+
+/* Bottom Copyright */
+.footer-bottom {
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+.footer-bottom p {
+    color: #666;
+    font-size: 0.85rem;
+    margin: 0;
+}
+
+/* Mobile Responsive Footer */
+@media (max-width: 768px) {
+    .footer-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 25px;
+    }
+    
+    .footer-links {
+        justify-content: center;
+        gap: 15px;
+    }
+}
