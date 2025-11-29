@@ -312,41 +312,41 @@ const app = {
     app.renderGameList(popularGames, "games-grid");
   },
 
-  renderGameList: (gamesList, containerId) => {
-    const container = document.getElementById(containerId);
-    if (!container) return;
+ // --- RENDER WITH HOVER AND LIBRARY CHECK ---
+    renderGameList: (gamesList, containerId, isLibrary = false) => { 
+        const container = document.getElementById(containerId);
+        if(!container) return;
+        
+        if(gamesList.length === 0) {
+            container.innerHTML = '<p style="color:#aaa; width:100%; text-align:center;">No games found.</p>';
+            return;
+        }
 
-    if (gamesList.length === 0) {
-      container.innerHTML =
-        '<p style="color:#aaa; width:100%; text-align:center;">No games found.</p>';
-      return;
-    }
+        container.innerHTML = gamesList.map(g => {
+            const mainImg = app.getOptimizedUrl(g.img, 400); 
+            const hoverImg = app.getOptimizedUrl(g.hoverImg, 400); 
 
-    container.innerHTML = gamesList
-      .map((g) => {
-        const mainImg = app.getOptimizedUrl(g.img, 400);
-        const hoverImg = app.getOptimizedUrl(g.hoverImg, 400);
-
-        return `
+            return `
             <div class="game-card">
                 <div class="image-wrapper">
                     <img src="${mainImg}" alt="${g.title}" class="main-img">
-                    ${g.hoverImg ? `<img src="${hoverImg}" class="hover-img" alt="${g.title} Hover">` : ""}
+                    ${g.hoverImg ? `<img src="${hoverImg}" class="hover-img" alt="${g.title} Hover">` : ''}
                 </div>
                 
-                <button class="center-cart-btn" onclick="app.addToCart(${g.id})">
-                    Add to Cart
-                </button>
+                ${isLibrary ? '' : `
+                    <button class="center-cart-btn" onclick="app.addToCart(${g.id})">
+                        Add to Cart
+                    </button>
+                `}
 
                 <div class="game-info-bottom">
                     <h3>${g.title}</h3>
-                    <span class="price">$${g.price}</span>
+                    ${isLibrary ? '' : `<span class="price">$${g.price}</span>`}
                 </div>
             </div>
             `;
-      })
-      .join("");
-  },
+        }).join('');
+    },
 
   addToCart: async (gameId) => {
     const games = await database.getGames();
@@ -725,4 +725,5 @@ document.addEventListener("DOMContentLoaded", () => {
   });
   app.init();
 });
+
 
