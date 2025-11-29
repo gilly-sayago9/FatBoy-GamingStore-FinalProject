@@ -11,9 +11,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script type="text/javascript">
         (function() {
+            // ✅ PUBLIC KEY INTEGRATED HERE
             emailjs.init("Edh9ATU-sTeLcNBsc");
         })();
     </script>
@@ -105,12 +109,28 @@
 
             emailjs.send(serviceID, templateID, params)
                 .then(() => {
-                    alert("Message Sent Successfully! We will get back to you soon.");
+                    // NEW: SweetAlert2 Success
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Message Sent!',
+                        text: 'We have received your message and will get back to you soon.',
+                        background: '#18181b', // Dark background
+                        color: '#ffffff',     // White text
+                        confirmButtonColor: '#facc15' // Gold button
+                    });
                     e.target.reset(); 
                 })
                 .catch((err) => {
-                    alert("Failed to send message. Check console for details.");
+                    // NEW: SweetAlert2 Error
                     console.error("EmailJS Error:", err);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Sending Failed',
+                        text: 'Failed to send message. Please check the console for details.',
+                        background: '#18181b',
+                        color: '#ffffff',
+                        confirmButtonColor: '#facc15'
+                    });
                 })
                 .finally(() => {
                     btn.innerText = originalText;
