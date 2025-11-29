@@ -1,0 +1,225 @@
+:root {
+    --bg-color: #050505;
+    --card-bg: rgba(24, 24, 27, 0.95); /* Added slight transparency for modern look */
+    --text-color: #ffffff;
+    --text-muted: #a1a1aa;
+    --primary-yellow: #facc15;
+    --primary-hover: #eab308;
+    --input-bg: #27272a;
+    --border-color: #333;
+}
+/* Wrapper to hold input and icon together */
+.password-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+/* Adjust input to make room for the icon so text doesn't overlap */
+.password-wrapper input {
+    width: 100%;
+    padding-right: 40px; /* Space for the icon */
+}
+
+/* Position the eye icon */
+.password-wrapper i {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%); /* Centers vertically */
+    cursor: pointer;
+    color: #a0a0a0; /* Grey color matches your theme */
+    transition: color 0.3s ease;
+}
+
+/* Hover effect for the icon */
+.password-wrapper i:hover {
+    color: #f5c518; /* Your theme's Yellow color */
+}
+
+body {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    overflow-x: hidden; /* Prevent horizontal scroll on small screens */
+}
+
+.hidden { display: none !important; }
+
+/* --- LOGIN CONTAINER & VIDEO BG --- */
+.container { 
+    display: flex; 
+    align-items: center;       /* Vertically Center */
+    
+    /* 1. RIGHT ALIGNMENT LOGIC (DESKTOP) */
+    justify-content: flex-end; /* Pushes content to the right */
+    padding-right: 5%;        /* Adds space from the right edge */
+    
+    height: 100vh; 
+    width: 100%;
+    position: relative; 
+    box-sizing: border-box;    /* Ensures padding doesn't break width */
+}
+/* Wrapper to hold the video fixed */
+.video-background {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    overflow: hidden; /* Cuts off the zoomed-in edges */
+    z-index: -99;
+}
+
+/* The YouTube Iframe */
+.video-background iframe {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100vw;
+    height: 100vh;
+    
+    /* Center the video and ZOOM IN to hide controls/black bars */
+    transform: translate(-50%, -50%) scale(1.35); 
+    
+    /* CRITICAL: Makes the video unclickable so you can click the login form */
+    pointer-events: none; 
+}
+
+/* Keep your overlay the same */
+.video-overlay {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.6); /* Adjust darkness here */
+    pointer-events: none;
+}
+
+/* .video-background {background-color: #ea5743; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
+.video-background video { width: 100%; height: 100%; object-fit: cover; }
+.video-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); z-index: 0; } */
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+    width: 100%;
+    box-sizing: border-box;
+    position: fixed;
+    top: 0;
+    z-index: 100;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent);
+}
+
+.nav-left { display: flex; align-items: center; }
+
+.logo { display: flex; align-items: center; gap: 10px; }
+.logo img { height: 40px; width: 40px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary-yellow); }
+
+/* Animated Gold Text */
+.logo-text {
+    font-weight: 800;
+    font-size: 1.2rem;
+    background: linear-gradient(to right, #facc15 20%, #fff 50%, #facc15 80%);
+    background-size: 200% auto;
+    color: transparent;
+    -webkit-background-clip: text;
+    background-clip: text;
+    animation: shine 3s linear infinite;
+}
+@keyframes shine { to { background-position: 200% center; } }
+
+.nav-right { display: flex; align-items: center; gap: 30px; }
+
+.nav-link {
+    color: #d4d4d8;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: color 0.3s;
+}
+.nav-link:hover { color: var(--primary-yellow); }
+
+.music-btn { background: rgba(255, 255, 255, 0.1); border: none; cursor: pointer; font-size: 1rem; color: white; border-radius: 50%; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; transition: 0.3s; }
+.music-btn:hover { background: rgba(255, 255, 255, 0.2); color: var(--primary-yellow); transform: scale(1.1); }
+
+
+/* --- LOGIN CARD --- */
+.login-card {
+    background-color: var(--card-bg); 
+    padding: 40px; 
+    border-radius: 12px;
+    
+    /* 2. FLEXIBLE WIDTH (Important for Mobile) */
+    width: 100%;            /* Take full width available... */
+    max-width: 400px;       /* ...but never grow larger than 400px */
+    
+    text-align: center; 
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
+    position: relative; 
+    z-index: 2;
+    backdrop-filter: blur(10px); /* Adds nice glass effect */
+}
+
+.logo-area { margin-bottom: 20px; }
+.avatar-circle { width: 60px; height: 60px; background: white; border-radius: 50%; margin: 0 auto; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 2px solid var(--primary-yellow); }
+.avatar-circle img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+
+#auth-title { font-size: 1.5rem; color: #e4e4e7; margin-bottom: 30px; font-weight: 600; }
+
+.input-group { margin-bottom: 20px; text-align: left; }
+.input-group label { display: block; margin-bottom: 8px; font-size: 0.9rem; color: #a1a1aa; font-weight: 500; }
+.input-group input {
+    width: 100%; padding: 14px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); 
+    background-color: var(--input-bg); color: white; outline: none; 
+    box-sizing: border-box; font-size: 0.95rem; transition: 0.2s;
+}
+.input-group input:focus { border-color: var(--primary-yellow); background-color: #3f3f46; }
+
+.btn-primary {
+    width: 100%; padding: 14px; border-radius: 8px; border: none; 
+    background-color: var(--primary-yellow); color: #000; font-weight: 700; 
+    cursor: pointer; font-size: 1rem; margin-top: 10px; transition: 0.2s;
+}
+.btn-primary:hover { background-color: var(--primary-hover); transform: translateY(-2px); }
+
+.switch-auth { margin-top: 25px; font-size: 0.9rem; font-weight: 500; color: #a1a1aa;}
+.switch-auth a { color: var(--primary-yellow); text-decoration: none; font-weight: 600; }
+.switch-auth a:hover { text-decoration: underline; }
+
+/* Error Message (From previous steps) */
+.error-msg { color: #ff4d4d; font-size: 0.9rem; margin: -10px 0 15px 0; text-align: left; }
+
+
+/* --- 3. RESPONSIVE DESIGN (MEDIA QUERIES) --- */
+
+/* Tablet & Mobile Screens (Less than 900px) */
+@media (max-width: 900px) {
+    .container {
+        justify-content: center; /* Move Card to CENTER */
+        padding-right: 20px;     /* Reset right padding */
+        padding-left: 20px;      /* Add left padding for balance */
+    }
+
+    .auth-header {
+        padding: 15px 20px;      /* Smaller header padding */
+    }
+}
+
+/* Very Small Mobile Screens (Less than 480px) */
+@media (max-width: 480px) {
+    .login-card {
+        padding: 30px 20px;      /* Less padding inside card */
+    }
+    
+    .auth-nav-links {
+        display: none;           /* Hide About/Contact links on tiny screens to save space */
+    }
+    
+    #auth-title {
+        font-size: 1.25rem;
+    }
+}

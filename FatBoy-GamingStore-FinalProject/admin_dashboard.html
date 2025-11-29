@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - FatBoy GameStop</title>
+    <link rel="icon" href="images/logo.png?v=2" type="image/png" sizes="32x32">
+    <link rel="stylesheet" href="css/admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="admin-wrapper">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="admin-profile"><img src="images/logo.png" alt="Admin"><span>Admin Panel</span></div>
+            </div>
+            <nav class="sidebar-menu">
+                <button onclick="admin.switchTab('overview')" id="btn-overview" class="active"><i class="fas fa-chart-pie"></i> Analytics</button>
+                <button onclick="admin.switchTab('games')" id="btn-games"><i class="fas fa-gamepad"></i> Manage Games</button>
+                <button onclick="admin.switchTab('users')" id="btn-users"><i class="fas fa-users"></i> Users</button>
+                <button onclick="admin.logout()" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </nav>
+        </aside>
+        <main class="main-content">
+            <section id="view-overview" class="view-section">
+                <h1 class="page-title">Analytics Dashboard</h1>
+                <div class="stats-grid">
+                    <div class="stat-card"><div class="icon-box blue"><i class="fas fa-users"></i></div><div class="stat-info"><span class="label">Total Users</span><span class="value" id="stat-users">0</span></div></div>
+                    <div class="stat-card"><div class="icon-box green"><i class="fas fa-dollar-sign"></i></div><div class="stat-info"><span class="label">Total Revenue</span><span class="value" id="stat-revenue">$0.00</span></div></div>
+                    <div class="stat-card"><div class="icon-box purple"><i class="fas fa-gamepad"></i></div><div class="stat-info"><span class="label">Total Games</span><span class="value" id="stat-games">0</span></div></div>
+                    <div class="stat-card"><div class="icon-box gold"><i class="fas fa-trophy"></i></div><div class="stat-info"><span class="label">Top Selling</span><span class="value small" id="stat-top-game">--</span></div></div>
+                </div>
+                <div class="charts-container">
+                    <div class="card chart-card"><h3>Sales Overview</h3><div class="chart-wrapper"><canvas id="salesChart"></canvas></div></div>
+                    <div class="card chart-card"><h3>Market Share (Game Popularity)</h3><div class="chart-wrapper"><canvas id="popularityChart"></canvas></div></div>
+                </div>
+            </section>
+            <section id="view-games" class="view-section hidden">
+                <h1 class="page-title">Game Inventory</h1>
+                <div class="split-layout">
+                    <div class="card form-card">
+                        <h3 id="form-title">Add / Edit Game</h3>
+                        <form onsubmit="admin.handleGameForm(event)">
+                            <input type="hidden" id="edit-game-id">
+                            <div class="input-group"><label>Title</label><input type="text" id="game-title" placeholder="E.g. Elden Ring" required></div>
+                            <div class="input-group"><label>Price ($)</label><input type="number" id="game-price" placeholder="59.99" step="0.01" required></div>
+                            <div class="input-group"><label>Main Cover Image</label><div class="file-input-wrapper"><input type="file" id="game-img" accept="image/*"></div></div>
+                            <div class="input-group"><label style="color: var(--accent);">2nd Cover Image / GIF (Hover)</label><div class="file-input-wrapper"><input type="file" id="game-hover-img" accept="image/*"></div></div>
+                            <button type="submit" class="btn-primary" id="btn-save">Save Game</button>
+                            <button type="button" class="btn-secondary hidden" id="btn-cancel" onclick="admin.resetGameForm()">Cancel</button>
+                        </form>
+                    </div>
+                    <div class="card table-card-full">
+                        <h3>Current Games</h3>
+                        <div class="table-responsive">
+                            <table><thead><tr><th>Image</th><th>Title</th><th>Price</th><th>Actions</th></tr></thead><tbody id="games-table-body"></tbody></table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section id="view-users" class="view-section hidden">
+                <h1 class="page-title">User Management</h1>
+                <div class="card"><div class="table-responsive"><table><thead><tr><th>User</th><th>Role</th><th>Purchases</th><th>Total Spent</th><th>Action</th></tr></thead><tbody id="users-table-body"></tbody></table></div></div>
+            </section>
+        </main>
+    </div>
+    <script src="scrpt/database.js"></script>
+    <script src="scrpt/admin.js"></script>
+    <script>auth.onAuthStateChanged(async user => { if (user) { const userData = await database.getUser(user.uid); if (userData && userData.role === 'admin') { admin.init(); } else { window.location.href = 'index.html'; } } else { window.location.href = 'index.html'; } });</script>
+</body>
+</html>

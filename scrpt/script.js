@@ -8,7 +8,6 @@ const app = {
     getOptimizedUrl: (url, width = 400) => {
         if (!url) return 'https://placehold.co/200x150?text=No+Image';
         if (url.includes('cloudinary.com')) {
-            // w_400: Resize, q_auto: Optimize quality, f_auto: Best format
             return url.replace('/upload/', `/upload/w_${width},c_fill,q_auto,f_auto/`);
         }
         return url; 
@@ -16,17 +15,31 @@ const app = {
 
     // --- INITIALIZATION ---
     init: () => {
-        auth.onAuthStateChanged(async (firebaseUser) => {
-            if (firebaseUser) {
-                const userData = await database.getUser(firebaseUser.uid);
-                if(userData) {
-                    app.currentUser = userData;
-                    app.initPage();
-                }
-            } else if (window.location.pathname.includes('dashboard') || window.location.pathname.includes('admin')) {
+        firebase.auth().onAuthStateChanged(async (firebaseUser) => {
+            // ONLY redirect if user exists AND email is verified
+            if (firebaseUser && firebaseUser.emailVerified) {
+                app.redirectUser(firebaseUser.uid);
+            } 
+            // If user exists but NOT verified, prevent auto-login on dashboard
+            else if ((window.location.pathname.includes('dashboard') || window.location.pathname.includes('admin'))) {
                 window.location.href = 'index.html';
             }
         });
+    },
+
+    redirectUser: async (uid) => {
+        const userData = await database.getUser(uid);
+        if(userData) {
+            app.currentUser = userData;
+            const path = window.location.pathname;
+            if (userData.role === 'admin' && !path.includes('admin_dashboard')) {
+                window.location.href = 'admin_dashboard.html';
+            } else if (userData.role !== 'admin' && !path.includes('user_dashboard')) {
+                window.location.href = 'user_dashboard.html';
+            } else {
+                app.initPage(); 
+            }
+        }
     },
 
     initPage: () => {
@@ -58,6 +71,145 @@ const app = {
         }
     },
 
+    // --- AUTHENTICATION LOGIC ---
+
+    toggleAuthMode: () => {
+        app.isRegistering = !app.isRegistering;
+        
+        document.getElementById('auth-title').innerText = app.isRegistering ? "Create Account" : "Log in to continue";
+        document.querySelector('.btn-primary').innerText = app.isRegistering ? "Sign Up" : "Log in";
+        document.getElementById('auth-switch-text').innerText = app.isRegistering ? "Already have an account? Log in" : "Create an account";
+        
+        const emailGroup = document.getElementById('email-group');
+        const confirmGroup = document.getElementById('confirm-password-group');
+        const loginLabel = document.getElementById('login-label');
+        const loginInput = document.getElementById('login-input');
+
+        // Clear messages
+        app.showError(""); 
+        app.showSuccess("");
+
+        if (app.isRegistering) {
+            emailGroup.classList.remove('hidden');
+            confirmGroup.classList.remove('hidden');
+            loginLabel.innerText = "Username";
+            loginInput.placeholder = "Choose a unique username";
+            document.getElementById('email').setAttribute('required', 'true');
+            document.getElementById('confirm-password').setAttribute('required', 'true');
+        } else {
+            emailGroup.classList.add('hidden');
+            confirmGroup.classList.add('hidden');
+            loginLabel.innerText = "Username or Email";
+            loginInput.placeholder = "Enter username or email";
+            document.getElementById('email').removeAttribute('required');
+            document.getElementById('confirm-password').removeAttribute('required');
+        }
+    },
+
+    // Helper: Show Error
+    showError: (msg) => {
+        const el = document.getElementById('login-error');
+        if(!el) return;
+        el.innerText = msg;
+        msg ? el.classList.remove('hidden') : el.classList.add('hidden');
+    },
+
+    // Helper: Show Success
+    showSuccess: (msg) => {
+        const el = document.getElementById('auth-success');
+        if(!el) return;
+        el.innerText = msg;
+        msg ? el.classList.remove('hidden') : el.classList.add('hidden');
+    },
+
+    handleAuth: async (e) => {
+        e.preventDefault();
+        app.showError("");
+        app.showSuccess("");
+
+        const loginInput = document.getElementById('login-input').value.trim();
+        const password = document.getElementById('password').value;
+        
+        try {
+            if (app.isRegistering) {
+                // --- 1. REGISTRATION ---
+                const email = document.getElementById('email').value.trim();
+                const confirmPass = document.getElementById('confirm-password').value;
+                const username = loginInput;
+
+                if (password !== confirmPass) throw new Error("Passwords do not match!");
+                if (username.length < 3) throw new Error("Username must be at least 3 characters.");
+                
+                const passwordRegex = /^(?=.*[A-Z])(?=.*[0-9])(?=.*[\W_]).{8,}$/;
+                if (!passwordRegex.test(password)) {
+                    throw new Error("Password must be 8+ chars with 1 uppercase, 1 number, and 1 special char.");
+                }
+
+                const existingUser = await database.findUserByUsername(username);
+                if (existingUser) throw new Error("Username is already taken.");
+
+                // Create User
+                const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, password);
+                const user = userCredential.user;
+
+                // Save Profile
+                await database.saveUser({
+                    uid: user.uid,
+                    username: username,
+                    email: email,
+                    role: 'user', 
+                    cart: [],
+                    history: []
+                });
+
+                // Send Verification Email
+                await user.sendEmailVerification();
+
+                // Sign Out Immediately (Require Login)
+                await firebase.auth().signOut();
+
+                // Notify User
+                app.showSuccess("Account created! Verification email sent. Please check your inbox before logging in.");
+                
+                // Auto-switch to login mode
+                setTimeout(() => {
+                    if (app.isRegistering) app.toggleAuthMode();
+                }, 3000);
+
+            } else {
+                // --- 2. LOGIN ---
+                let emailToLogin = loginInput;
+
+                if (!loginInput.includes('@')) {
+                    const userData = await database.findUserByUsername(loginInput);
+                    if (!userData) throw new Error("Username not found.");
+                    emailToLogin = userData.email;
+                }
+
+                const userCredential = await firebase.auth().signInWithEmailAndPassword(emailToLogin, password);
+                const user = userCredential.user;
+
+                // Check Verification
+                if (!user.emailVerified) {
+                    await firebase.auth().signOut(); 
+                    throw new Error("Please verify your email address before logging in.");
+                }
+
+                app.showSuccess("Login Successful! Redirecting...");
+                
+                setTimeout(() => {
+                    app.redirectUser(user.uid);
+                }, 1000);
+            }
+        } catch (error) {
+            app.showError(error.message.replace("Firebase: ", ""));
+        }
+    },
+
+    logout: () => { firebase.auth().signOut(); window.location.href = 'index.html'; },
+
+    // ... [SEARCH, SHOP, CART LOGIC] ...
+    
     handleSearch: () => {
         const query = document.getElementById('search-input').value.toLowerCase();
         if (query.length > 0) {
@@ -101,7 +253,6 @@ const app = {
         app.renderGameList(popularGames, 'games-grid');
     },
 
-    // --- RENDER WITH HOVER ---
     renderGameList: (gamesList, containerId) => {
         const container = document.getElementById(containerId);
         if(!container) return;
@@ -192,6 +343,7 @@ const app = {
         if(document.getElementById('total-price')) document.getElementById('total-price').innerText = total.toFixed(2);
     },
 
+    // --- PAYMENT LOGIC (With Email Fallback) ---
     openPaymentModal: () => {
         if (!app.currentUser.cart || app.currentUser.cart.length === 0) return alert("Cart is empty");
         const total = document.getElementById('total-price').innerText;
@@ -235,8 +387,24 @@ const app = {
         }
 
         const total = parseFloat(document.getElementById('checkout-total').innerText.replace('$', ''));
+        const dateStr = new Date().toLocaleString();
+        const orderId = Math.floor(10000000 + Math.random() * 90000000); 
+
+        // Generate Dark Mode Receipt
+        const itemsHtml = app.currentUser.cart.map(item => `
+            <tr style="border-bottom: 1px solid #333;">
+                <td style="padding: 15px 0;">
+                    <div style="font-weight: bold; color: #ffffff; font-size: 14px;">${item.title}</div>
+                    <div style="font-size: 12px; color: #71717a;">Game</div>
+                </td>
+                <td style="text-align: right; padding: 15px 0; color: #ffffff; font-weight: 500;">$${item.price}</td>
+            </tr>
+        `).join('');
+
+        // Save to Firebase
         const purchaseRecord = { 
-            date: new Date().toLocaleString(), 
+            orderId: orderId,
+            date: dateStr, 
             items: app.currentUser.cart, 
             total: total,
             paymentMethod: method
@@ -246,13 +414,48 @@ const app = {
         app.currentUser.cart = [];
         await database.saveUser(app.currentUser);
         
-        app.updateDashboardUI();
-        app.renderCart();
-        document.getElementById('payment-modal').classList.add('hidden');
-        alert(`Payment successful via ${method.toUpperCase()}!`);
-        app.showDashboard();
+        // Send Email Receipt
+        const btn = document.querySelector('#payment-modal .btn-primary');
+        const originalText = btn.innerText;
+        btn.innerText = "Sending Receipt...";
+        
+        // --- ROBUST EMAIL CHECK ---
+        let userEmail = app.currentUser.email;
+        if (!userEmail && firebase.auth().currentUser) {
+            userEmail = firebase.auth().currentUser.email;
+        }
+
+        if (!userEmail || userEmail.trim() === "") {
+            userEmail = prompt("We couldn't find your email address. Please enter it to receive your receipt:");
+        }
+        
+        try {
+            if (userEmail && userEmail.trim() !== "") {
+                await emailjs.send("service_jh2cxyl", "template_5cwdrep", {
+                    to_name: app.currentUser.username || "Gamer",
+                    to_email: userEmail,
+                    order_id: orderId,
+                    order_date: dateStr,
+                    order_items_html: itemsHtml, 
+                    total_cost: total.toFixed(2)
+                });
+                alert(`Payment Successful! Receipt sent to ${userEmail}`);
+            } else {
+                alert("Payment Successful! (No receipt sent because no email was provided).");
+            }
+        } catch (error) {
+            console.error("Email Failed:", error);
+            alert(`Payment successful, but email receipt failed: ${error.text || error.message}`);
+        } finally {
+            btn.innerText = originalText;
+            app.updateDashboardUI();
+            app.renderCart();
+            document.getElementById('payment-modal').classList.add('hidden');
+            app.showDashboard();
+        }
     },
 
+    // --- NAVIGATION ---
     hideAll: () => document.querySelectorAll('.main-content').forEach(el => el.classList.add('hidden')),
     showShop: () => { app.hideAll(); document.getElementById('shop-section').classList.remove('hidden'); },
     showCart: () => { app.hideAll(); document.getElementById('cart-section').classList.remove('hidden'); app.renderCart(); },
@@ -270,7 +473,7 @@ const app = {
             historyHTML = [...user.history].reverse().map(order => `
                 <div class="history-card">
                     <div class="history-header"><span>${order.date}</span><span style="color:#facc15;">${order.paymentMethod ? order.paymentMethod.toUpperCase() : 'N/A'}</span></div>
-                    <div>Total: <strong>$${order.total.toFixed(2)}</strong></div>
+                    <div>Total: <strong style="color:white">$${order.total.toFixed(2)}</strong></div>
                     <ul class="history-items">${order.items.map(item => `<li>• ${item.title}</li>`).join('')}</ul>
                 </div>`).join('');
         }
@@ -289,49 +492,23 @@ const app = {
         } else {
             icon.classList.remove('fa-volume-mute'); icon.classList.add('fa-volume-high'); icon.style.color = '#facc15';
         }
-    },
-
-    toggleAuthMode: () => {
-        app.isRegistering = !app.isRegistering;
-        document.getElementById('auth-title').innerText = app.isRegistering ? "Create Account" : "Log in to continue";
-        document.querySelector('.btn-primary').innerText = app.isRegistering ? "Sign Up" : "Log in";
-        document.getElementById('auth-switch-text').innerText = app.isRegistering ? "Already have an account? Log in" : "Create an account";
-    },
-
-    handleAuth: async (e) => {
-        e.preventDefault();
-        const username = document.getElementById('username').value;
-        const email = username.includes('@') ? username : username + "@fatboy.com"; 
-        const pass = document.getElementById('password').value;
-        try {
-            if (app.isRegistering) {
-                const userCredential = await auth.createUserWithEmailAndPassword(email, pass);
-                await database.saveUser({
-                    uid: userCredential.user.uid, username: username, email: email, role: 'user', cart: [], history: []
-                });
-                alert("Account created!"); window.location.href = 'user_dashboard.html';
-            } else {
-                const userCredential = await auth.signInWithEmailAndPassword(email, pass);
-                const userData = await database.getUser(userCredential.user.uid);
-                window.location.href = userData.role === 'admin' ? 'admin_dashboard.html' : 'user_dashboard.html';
-            }
-        } catch (error) { alert("Error: " + error.message); }
-    },
-
-    logout: () => { auth.signOut(); window.location.href = 'index.html'; }
+    }
 };
 
-    const togglePassword = document.querySelector('#togglePassword');
-    const passwordInput = document.querySelector('#password');
-
-    togglePassword.addEventListener('click', function () {
-        // Toggle the type attribute
-        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-        passwordInput.setAttribute('type', type);
-        
-        // Toggle the eye / eye-slash icon
-        this.classList.toggle('fa-eye-slash');
-        this.classList.toggle('fa-eye');
+// --- INIT ---
+document.addEventListener('DOMContentLoaded', () => {
+    const toggleIcons = document.querySelectorAll('.toggle-password');
+    toggleIcons.forEach(icon => {
+        icon.addEventListener('click', function() {
+            const targetId = this.getAttribute('data-target');
+            const inputElement = document.getElementById(targetId);
+            if (inputElement) {
+                const type = inputElement.getAttribute('type') === 'password' ? 'text' : 'password';
+                inputElement.setAttribute('type', type);
+                this.classList.toggle('fa-eye');
+                this.classList.toggle('fa-eye-slash');
+            }
+        });
     });
-
-app.init();
+    app.init();
+});
